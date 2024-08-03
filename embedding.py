@@ -6,7 +6,7 @@ import requests
 import json
 import os
 
-# Function to fetch API key
+# Function to fetch API key from an external service
 def fetch_api_key(email):
     url = "http://52.66.239.27:8504/get_keys"
     headers = {'Content-Type': 'application/json'}
@@ -16,21 +16,21 @@ def fetch_api_key(email):
         response = requests.post(url, headers=headers, data=json.dumps(payload))
         
         if response.status_code == 200:
-            api_key = response.json().get("key")  # Correct key name
+            api_key = response.json().get("key")
             if api_key:
                 return api_key
             else:
                 print("API Key not found in the response.")
                 return None
         else:
-            print("Failed to fetch API key. Status code:", response.status_code)
+            print(f"Failed to fetch API key. Status code: {response.status_code}")
             return None
     except Exception as e:
         print(f"Error during API key fetching: {e}")
         return None
 
-# Directly specify the email address here
-email = "kbandla248@gmail.com"  # Replace with your actual email
+# Use environment variable for the email address
+email = os.getenv("API_FETCH_EMAIL")
 api_key = fetch_api_key(email)
 if api_key:
     openai.api_key = api_key
@@ -57,14 +57,14 @@ def get_embeddings(df, column_name="description"):
         if embedding is not None:
             embeddings.append(embedding)
         else:
-            embeddings.append([None]*len(df.columns))  # Handle errors gracefully
-        time.sleep(1)  # Adding a delay to avoid rate limits
+            embeddings.append([None] * 1536)  # Assuming the embedding size is 1536; adjust if necessary
+        time.sleep(1)  # Avoid rate limits
     return embeddings
 
 df["embedding"] = get_embeddings(df)
 
 # Save the embeddings
-embeddings = df[["title", "description", "date", "embedding"]]
-embeddings.to_pickle("embeddings.pkl")
+embeddings_df = df[["title", "description", "date", "embedding"]]
+embeddings_df.to_pickle("embeddings.pkl")
 
 print("Embeddings have been saved to embeddings.pkl")

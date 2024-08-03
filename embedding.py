@@ -5,10 +5,6 @@ import time
 import requests
 import json
 import os
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
 
 # Function to fetch API key
 def fetch_api_key(email):
@@ -33,8 +29,8 @@ def fetch_api_key(email):
         print(f"Error during API key fetching: {e}")
         return None
 
-# Load the API key
-email = os.getenv("USER_EMAIL")  # Ensure USER_EMAIL is set in your .env file
+# Directly specify the email address here
+email = "kbandla248@gmail.com"  # Replace with your actual email
 api_key = fetch_api_key(email)
 if api_key:
     openai.api_key = api_key

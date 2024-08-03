@@ -3,13 +3,9 @@ import pandas as pd
 import numpy as np
 import openai
 import os
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
-
-# Set OpenAI API key from environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Access OpenAI API key from Streamlit secrets
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # Load the embeddings
 embeddings = pd.read_pickle("embeddings.pkl")
